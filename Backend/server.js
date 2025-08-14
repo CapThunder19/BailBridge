@@ -3,6 +3,7 @@ const mongoose =  require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const authRoutes = require("./routes/authroutes");
+const prisonerRoutes = require("./routes/prisoner");
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/prisoners", prisonerRoutes);
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
