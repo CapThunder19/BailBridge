@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './FormPages.css';
 
 export default function UndertrialPrisoner() {
@@ -12,16 +13,25 @@ export default function UndertrialPrisoner() {
 
   function update(k, v) { setForm(s => ({ ...s, [k]: v })); }
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
-    // Mock analysis
-    const served = Number(form.timeServedDays || 0);
-    const eligible = served > 30;
-    setResult({
-      eligible,
-      message: eligible ? 'Eligible for bail now' : `Eligible in ${Math.max(1, 45-served)} days`,
-      notes: [`Sections: ${form.sections || '-'}`, `Time served: ${served} days`],
-    });
+    try {
+      const payload = { ...form, timeServedDays: Number(form.timeServedDays) };
+      const response = await axios.post('http://localhost:5000/api/prisoners', payload);
+      setResult({
+        message: 'Details saved!',
+        notes: [
+          `Case ID: ${response.data.caseId}`,
+          `Name: ${response.data.prisoner.name}`,
+          `Sections: ${response.data.prisoner.sections}`,
+          `Time served: ${response.data.prisoner.timeServedDays} days`,
+          `Gemini Summary: ${response.data.summary?.candidates?.[0]?.content?.parts?.[0]?.text || 'No summary'}`
+        ],
+        eligible: response.data.summary?.candidates?.[0]?.content?.parts?.[0]?.text?.toLowerCase().includes('eligible') || false
+      });
+    } catch (err) {
+      setResult({ message: 'Failed to save prisoner details.', notes: [], eligible: false });
+    }
   }
 
   function logout() {
@@ -55,17 +65,17 @@ export default function UndertrialPrisoner() {
         <label className="checkbox"><input type="checkbox" checked={form.previousRejections} onChange={e => update('previousRejections', e.target.checked)} /> Any previous bail rejections?</label>
 
         <div className="form-actions">
-          <button className="btn-primary" type="submit">Analyze</button>
+          <button className="btn-primary" type="submit">Submit</button>
           <button type="button" className="btn-ghost" onClick={() => navigator.clipboard?.writeText(JSON.stringify(form))}>Copy JSON</button>
         </div>
       </form>
 
       {result && (
-        <div className={`result ${result.eligible ? 'ok' : 'no'}`}>
+        <div className={`result ${result.eligible === true ? 'ok' : result.eligible === false ? 'no' : ''}`}>
           <h3>{result.message}</h3>
           <ul>{result.notes.map((n,i)=><li key={i}>{n}</li>)}</ul>
         </div>
       )}
-    </motion.div>
-  );
-}
+        </motion.div>
+    );
+  }
