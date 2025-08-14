@@ -12,7 +12,7 @@ export default function LoginCourtStaff() {
   async function submit(e) {
     e.preventDefault();
     try {
-      const res = await axios.post('https://bailbridge-3.onrender.com/api/auth/login', { email, password, role: 'courtstaff' });
+      const res = await axios.post('https://bailbridge-6.onrender.com/api/auth/login', { email, password, role: 'courtstaff' });
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('role', 'courtstaff');
