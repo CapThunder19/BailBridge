@@ -1,55 +1,59 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import './FormPages.css';
-import './Requests.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './JudgeBailReview.css';
 
-const mockRequests = [
-  { id: 1, caseNumber: 'FIR-2024/123', name: 'Ramesh', sections: '420, 406', daysServed: 35, status: 'pending' },
-  { id: 2, caseNumber: 'FIR-2024/200', name: 'Sita', sections: '302', daysServed: 10, status: 'pending' },
-];
 
-export default function CourtStaff() {
-  const [requests, setRequests] = useState(mockRequests);
-  const nav = useNavigate();
+export default function JudgeBailReview() {
+  const [applications, setApplications] = useState([]);
+  const [response, setResponse] = useState({});
+  const [decision, setDecision] = useState({});
+  const [statusMsg, setStatusMsg] = useState('');
 
-  function decide(id, decision, note) {
-    setRequests(rs => rs.map(r => r.id === id ? {...r, status: decision, note} : r));
-    alert(`Case ${id} marked as ${decision}. (In real app, create order + notify)`);
-  }
+  useEffect(() => {
+    async function fetchApplications() {
+      const res = await axios.get('http://localhost:5000/api/lawyer/bail-applications');
+      setApplications(res.data);
+    }
+    fetchApplications();
+  }, [statusMsg]);
 
-  function logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    nav('/login-courtstaff');
+  async function handleResponse(id) {
+    try {
+      await axios.post(`http://localhost:5000/api/lawyer/bail/${id}/response`, {
+        judgeResponse: response[id] || '',
+        decision: decision[id]
+      });
+      setStatusMsg('Decision submitted!');
+    } catch (err) {
+      setStatusMsg('Error submitting decision');
+    }
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="form-page">
-      <h2>Court Staff — Review & Decide</h2>
-      <button className="btn-ghost" style={{ float: 'right', marginBottom: 8 }} onClick={logout}>Logout</button>
-      <div style={{ marginBottom: 16 }}>
-        <Link to="/login-courtstaff" className="btn-primary" style={{ marginRight: 8 }}>Login</Link>
-        <Link to="/signup-courtstaff" className="btn-ghost">Sign up</Link>
-      </div>
-      <div className="requests">
-        {requests.map(req => (
-          <div key={req.id} className={`request-card ${req.status}`}>
-            <div className="req-left">
-              <strong>{req.caseNumber}</strong>
-              <div>{req.name} • Sections: {req.sections}</div>
-              <div>Days served: {req.daysServed}</div>
-            </div>
-            <div className="req-right">
-              <div className="decision-row">
-                <button className="btn-primary" onClick={() => decide(req.id, 'granted', 'Eligible')}>Grant Bail</button>
-                <button className="btn-danger" onClick={() => decide(req.id, 'rejected', 'Not eligible')}>Reject</button>
-              </div>
-              <textarea placeholder="Notes / Order draft" rows={3} onBlur={(e)=> console.log('save note', e.target.value)} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </motion.div>
+    <div className="judge-page">
+      <h2>Judge Bail Applications</h2>
+      {applications.map(app => (
+        <div key={app._id} className="application-card">
+          <p><b>Prisoner:</b> {app.prisonerId?.name}</p>
+          <p><b>Lawyer:</b> {app.lawyerName || app.Lawyername}</p>
+          <p><b>Status:</b> {app.status}</p>
+          <p><b>Judge Response:</b> {app.judgeResponse || '-'}</p>
+          <textarea
+            placeholder="Judge response"
+            value={response[app._id] || ''}
+            onChange={e => setResponse({ ...response, [app._id]: e.target.value })}
+          />
+          <select
+            value={decision[app._id] || ''}
+             onChange={e => setDecision({ ...decision, [app._id]: e.target.value })}>
+           <option value="">Select Decision</option>
+           <option value="approved">Approve</option>
+           <option value="rejected">Reject</option>
+            </select>
+          <button onClick={() => handleResponse(app._id)}>Submit Decision</button>
+        </div>
+      ))}
+      {statusMsg && <p className={`status-msg ${statusMsg.includes('Error') ? 'error' : 'success'}`}>{statusMsg}</p>}
+    </div>
   );
 }
