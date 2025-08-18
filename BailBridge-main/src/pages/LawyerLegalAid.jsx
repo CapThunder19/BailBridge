@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
 import './LawyerCaseLookup.css';
 
 export default function LawyerCaseLookup() {
   const [name, setName] = useState('');
   const [caseNumber, setCaseNumber] = useState('');
+  const [lawyerName, setLawyerName] = useState('');
   const [caseDetails, setCaseDetails] = useState(null);
   const [error, setError] = useState('');
   const [bailStatus, setBailStatus] = useState('');
@@ -24,17 +26,43 @@ export default function LawyerCaseLookup() {
     }
   }
 
-  async function generateBailApplication() {
+  async function generateBailApplication(sendPdf = false) {
     setBailStatus('');
     try {
-      await axios.post('http://localhost:5000/api/lawyer/bail', {
+     
+      let pdfBase64 = null;
+      if (sendPdf && caseDetails) {
+        const doc = new jsPDF();
+        doc.text('Bail Application', 10, 10);
+        doc.text(`Lawyer Name: ${lawyerName}`, 10, 20);
+        doc.text(`Prisoner Name: ${caseDetails.name}`, 10, 30);
+        doc.text(`Case Number: ${caseDetails.caseNumber}`, 10, 40);
+        doc.text(`Offense: ${caseDetails.offense || ''}`, 10, 50);
+        doc.text(`Status: ${caseDetails.status || ''}`, 10, 60);
+        pdfBase64 = doc.output('datauristring');
+      }
+
+      const res = await axios.post('http://localhost:5000/api/lawyer/bail', {
         prisonerId: caseDetails._id,
-        lawyerName: name
+        lawyerName: lawyerName,
+        pdf: pdfBase64
       });
-      setBailStatus('✅ Bail application submitted!');
+      setBailStatus('✅ Bail application (with PDF) submitted!');
     } catch (err) {
       setBailStatus(err.response?.data?.message || '❌ Failed to submit bail application');
     }
+  }
+
+  function downloadPdf() {
+    if (!caseDetails) return;
+    const doc = new jsPDF();
+    doc.text('Bail Application', 10, 10);
+    doc.text(`Lawyer Name: ${lawyerName}`, 10, 20);
+    doc.text(`Prisoner Name: ${caseDetails.name}`, 10, 30);
+    doc.text(`Case Number: ${caseDetails.caseNumber}`, 10, 40);
+    doc.text(`Offense: ${caseDetails.offense || ''}`, 10, 50);
+    doc.text(`Status: ${caseDetails.status || ''}`, 10, 60);
+    doc.save('bail_application.pdf');
   }
 
   return (
@@ -53,6 +81,13 @@ export default function LawyerCaseLookup() {
           placeholder="Case Number"
           value={caseNumber}
           onChange={e => setCaseNumber(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Lawyer Name"
+          value={lawyerName}
+          onChange={e => setLawyerName(e.target.value)}
           required
         />
         <button type="submit">Get Details</button>
@@ -79,15 +114,12 @@ export default function LawyerCaseLookup() {
             <span className="label">Status:</span>
             <span className="value">{caseDetails.status}</span>
           </div>
-          <div className="detail-row">
-            <span className="label">Lawyer Assigned:</span>
-            <span className="value">{caseDetails.lawyer || 'Not Assigned'}</span>
-          </div>
-
-          <button onClick={generateBailApplication} className="bail-btn">
-            Generate Bail Application
+          <button onClick={downloadPdf} className="bail-btn">
+            Download Bail Application PDF
           </button>
-
+          <button onClick={() => generateBailApplication(true)} className="bail-btn">
+            Generate Bail Application & Send PDF to Judge
+          </button>
           {bailStatus && <p className="status-message">{bailStatus}</p>}
         </div>
       )}

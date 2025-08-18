@@ -1,115 +1,135 @@
-/* === JudgeBailReview.css === */
 
 .judge-page {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 1rem;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-  font-family: system-ui, -apple-system, sans-serif;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #f4f7fb;
+  border-radius: 14px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .judge-page h2 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #1f2937; /* gray-800 */
-  margin-bottom: 1.5rem;
   text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #2c3e50;
 }
 
+
 .application-card {
-  border: 1px solid #e5e7eb; /* gray-200 */
-  border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.25rem;
-  background: #f9fafb; /* gray-50 */
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .application-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .application-card p {
-  margin: 0.3rem 0;
-  color: #374151; /* gray-700 */
-  font-size: 0.95rem;
+  margin: 6px 0;
+  font-size: 15px;
+  color: #34495e;
 }
 
-.application-card b {
-  color: #111827; /* gray-900 */
-}
-
-.application-card textarea {
-  width: 100%;
-  min-height: 70px;
-  margin-top: 0.6rem;
-  padding: 0.6rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  resize: vertical;
-  transition: all 0.2s;
-}
-
-.application-card textarea:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
-}
-
-.application-card select {
-  margin-top: 0.6rem;
-  padding: 0.55rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  background: white;
+/* ===== Buttons ===== */
+.application-card button,
+.button-secondary {
+  display: inline-block;
+  padding: 10px 16px;
+  margin: 8px 6px 10px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.application-card select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+  transition: background 0.3s ease, transform 0.2s;
 }
 
 .application-card button {
-  margin-top: 0.8rem;
-  background: #2563eb; /* blue */
+  background: #3498db;
   color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: background 0.2s;
 }
 
 .application-card button:hover {
-  background: #1e40af; /* darker blue */
+  background: #2980b9;
+  transform: scale(1.03);
+}
+
+.button-secondary {
+  background: #f0f3f6;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.button-secondary:hover {
+  background: #dce3ec;
+  transform: scale(1.02);
+}
+
+
+.application-card textarea,
+.application-card select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.application-card textarea:focus,
+.application-card select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+.application-card textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+
+.pdf-text,
+.gemini-suggestion {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-left: 4px solid #3498db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.pdf-text pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: monospace;
+  font-size: 13px;
+  background: #f1f4f8;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
 }
 
 .status-msg {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
   text-align: center;
-  font-weight: 500;
+  margin-top: 15px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .status-msg.success {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #86efac;
+  color: #27ae60;
 }
 
 .status-msg.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
+  color: #e74c3c;
 }

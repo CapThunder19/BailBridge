@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './JudgeBailReview.css';
 
-
 export default function JudgeBailReview() {
   const [applications, setApplications] = useState([]);
   const [response, setResponse] = useState({});
   const [decision, setDecision] = useState({});
   const [statusMsg, setStatusMsg] = useState('');
+  const [geminiSuggestion, setGeminiSuggestion] = useState({});
+  const [pdfText, setPdfText] = useState({});
 
   useEffect(() => {
     async function fetchApplications() {
@@ -29,6 +30,19 @@ export default function JudgeBailReview() {
     }
   }
 
+  async function getGeminiSuggestion(id) {
+    setGeminiSuggestion(prev => ({ ...prev, [id]: "Loading suggestion..." }));
+    try {
+      const res = await axios.post(`http://localhost:5000/api/lawyer/bail/${id}/gemini-suggest`);
+      setGeminiSuggestion(prev => ({ ...prev, [id]: res.data.suggestion }));
+      if (res.data.pdfText) {
+        setPdfText(prev => ({ ...prev, [id]: res.data.pdfText }));
+      }
+    } catch {
+      setGeminiSuggestion(prev => ({ ...prev, [id]: "Error getting suggestion" }));
+    }
+  }
+
   return (
     <div className="judge-page">
       <h2>Judge Bail Applications</h2>
@@ -38,6 +52,33 @@ export default function JudgeBailReview() {
           <p><b>Lawyer:</b> {app.lawyerName || app.Lawyername}</p>
           <p><b>Status:</b> {app.status}</p>
           <p><b>Judge Response:</b> {app.judgeResponse || '-'}</p>
+          
+          {app.pdf && (
+            <a
+              href={app.pdf}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="button-secondary"
+              style={{ display: 'inline-block', marginBottom: '8px' }}
+            >
+              View/Download Bail Application PDF
+            </a>
+          )}
+          <button onClick={() => getGeminiSuggestion(app._id)}>
+            Get Suggestion
+          </button>
+          {pdfText[app._id] && (
+            <div className="pdf-text">
+              <b>PDF Extracted Text:</b>
+              <pre>{pdfText[app._id]}</pre>
+            </div>
+          )}
+          {geminiSuggestion[app._id] && (
+            <div className="gemini-suggestion">
+              <b>Suggestion:</b>
+              <p>{geminiSuggestion[app._id]}</p>
+            </div>
+          )}
           <textarea
             placeholder="Judge response"
             value={response[app._id] || ''}
@@ -45,11 +86,11 @@ export default function JudgeBailReview() {
           />
           <select
             value={decision[app._id] || ''}
-             onChange={e => setDecision({ ...decision, [app._id]: e.target.value })}>
-           <option value="">Select Decision</option>
-           <option value="approved">Approve</option>
-           <option value="rejected">Reject</option>
-            </select>
+            onChange={e => setDecision({ ...decision, [app._id]: e.target.value })}>
+            <option value="">Select Decision</option>
+            <option value="approved">Approve</option>
+            <option value="rejected">Reject</option>
+          </select>
           <button onClick={() => handleResponse(app._id)}>Submit Decision</button>
         </div>
       ))}
