@@ -12,7 +12,7 @@ export default function SignupLawyer() {
   async function submit(e) {
     e.preventDefault();
     try {
-      const res = await axios.post('https://bailbridge-6.onrender.com/api/auth/signup', { email, password, role: 'lawyer' });
+      const res = await axios.post('https://bailbridge-7.onrender.com/api/auth/signup', { email, password, role: 'lawyer' });
       alert('Signup successful! Please login.');
       nav('/login-lawyer');
     } catch (err) {
