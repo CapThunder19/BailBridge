@@ -78,7 +78,7 @@ export default function LawyerCaseLookup() {
         />
         <input
           type="text"
-          placeholder="Case Number"
+          placeholder="Case ID"
           value={caseNumber}
           onChange={e => setCaseNumber(e.target.value)}
           required
