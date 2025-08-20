@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import './LawyerCaseLookup.css';
+import { generateStyledPdf } from '../components/Doc';
 
 export default function LawyerCaseLookup() {
   const [name, setName] = useState('');
@@ -17,7 +18,7 @@ export default function LawyerCaseLookup() {
     setCaseDetails(null);
     setBailStatus('');
     try {
-      const res = await axios.get('https://bailbridge-7.onrender.com/api/lawyer', {
+      const res = await axios.get('http://localhost:5000/api/lawyer', {
         params: { id: caseNumber, name }
       });
       setCaseDetails(res.data);
@@ -37,12 +38,12 @@ export default function LawyerCaseLookup() {
         doc.text(`Lawyer Name: ${lawyerName}`, 10, 20);
         doc.text(`Prisoner Name: ${caseDetails.name}`, 10, 30);
         doc.text(`Case Number: ${caseDetails.caseNumber}`, 10, 40);
-        doc.text(`Offense: ${caseDetails.offense || ''}`, 10, 50);
+        doc.text(`Offense: ${caseDetails.sections || ''}`, 10, 50);
         doc.text(`Status: ${caseDetails.status || ''}`, 10, 60);
         pdfBase64 = doc.output('datauristring');
       }
 
-      const res = await axios.post('https://bailbridge-7.onrender.com/api/lawyer/bail', {
+      const res = await axios.post('http://localhost:5000/api/lawyer/bail', {
         prisonerId: caseDetails._id,
         lawyerName: lawyerName,
         pdf: pdfBase64
@@ -53,17 +54,15 @@ export default function LawyerCaseLookup() {
     }
   }
 
-  function downloadPdf() {
-    if (!caseDetails) return;
-    const doc = new jsPDF();
-    doc.text('Bail Application', 10, 10);
-    doc.text(`Lawyer Name: ${lawyerName}`, 10, 20);
-    doc.text(`Prisoner Name: ${caseDetails.name}`, 10, 30);
-    doc.text(`Case Number: ${caseDetails.caseNumber}`, 10, 40);
-    doc.text(`Offense: ${caseDetails.offense || ''}`, 10, 50);
-    doc.text(`Status: ${caseDetails.status || ''}`, 10, 60);
-    doc.save('bail_application.pdf');
-  }
+function downloadPdf() {
+  if (!caseDetails) return;
+  const eligible =
+    caseDetails.eligible === true ||
+    caseDetails.eligible === "true" ||
+    caseDetails.eligible === 1;
+  const doc = generateStyledPdf(caseDetails, lawyerName, eligible);
+  doc.save("bail_application.pdf");
+}
 
   return (
     <div className="lawyer-case-container">

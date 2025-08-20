@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const PrisonerSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  age: { type: Number, required: true },
   caseNumber: { type: String, required: true },
   sections: { type: String, required: true },
   dateOfArrest: { type: Date, required: true },
@@ -9,6 +10,7 @@ const PrisonerSchema = new mongoose.Schema({
   previousRejections: { type: Boolean, default: false },
   courtStage: { type: String, required: true },
   healthIssues: { type: String },
+  eligible: { type: Boolean, default: false }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Prisoner', PrisonerSchema);
