@@ -9,7 +9,8 @@ const bailApplicationSchema = new mongoose.Schema({
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     createdAt: { type: Date, default: Date.now },
     judgeResponse: { type: String, enum: ["approved", "rejected"], default: null },
-    pdf: { type: String } 
+    pdf: { type: String } ,
+    court: { type: String }
 });
 
 module.exports = mongoose.model("BailApplication", bailApplicationSchema);

@@ -12,7 +12,7 @@ export default function JudgeBailReview() {
 
   useEffect(() => {
     async function fetchApplications() {
-      const res = await axios.get('https://bailbridge-7.onrender.com/api/lawyer/bail-applications');
+      const res = await axios.get('http://localhost:5000/api/lawyer/bail-applications');
       setApplications(res.data);
     }
     fetchApplications();
@@ -20,7 +20,7 @@ export default function JudgeBailReview() {
 
   async function handleResponse(id) {
     try {
-      await axios.post(`https://bailbridge-7.onrender.com/api/lawyer/bail/${id}/response`, {
+      await axios.post(`http://localhost:5000/api/lawyer/bail/${id}/response`, {
         judgeResponse: response[id] || '',
         decision: decision[id]
       });
@@ -33,7 +33,7 @@ export default function JudgeBailReview() {
   async function getGeminiSuggestion(id) {
     setGeminiSuggestion(prev => ({ ...prev, [id]: "Loading suggestion..." }));
     try {
-      const res = await axios.post(`https://bailbridge-7.onrender.com/api/lawyer/bail/${id}/gemini-suggest`);
+      const res = await axios.post(`http://localhost:5000/api/lawyer/bail/${id}/gemini-suggest`);
       setGeminiSuggestion(prev => ({ ...prev, [id]: res.data.suggestion }));
       if (res.data.pdfText) {
         setPdfText(prev => ({ ...prev, [id]: res.data.pdfText }));
@@ -73,12 +73,22 @@ export default function JudgeBailReview() {
               <pre>{pdfText[app._id]}</pre>
             </div>
           )}
-          {geminiSuggestion[app._id] && (
-            <div className="gemini-suggestion">
-              <b>Suggestion:</b>
-              <p>{geminiSuggestion[app._id]}</p>
-            </div>
-          )}
+         {geminiSuggestion[app._id] && (
+          <div className="gemini-suggestion" style={{
+              background: "#f7fafd",
+              border: "1px solid #dbeafe",
+              borderRadius: "8px",
+              padding: "12px",
+              margin: "8px 0"
+          }}>
+    <b style={{ color: "#2563eb" }}>Gemini Suggestion:</b>
+    {geminiSuggestion[app._id]
+      .split(/\n\s*\n/) 
+      .map((para, idx) => (
+        <p key={idx} style={{ margin: "8px 0", lineHeight: 1.6 }}>{para.trim()}</p>
+      ))}
+  </div>
+)}
           <textarea
             placeholder="Judge response"
             value={response[app._id] || ''}

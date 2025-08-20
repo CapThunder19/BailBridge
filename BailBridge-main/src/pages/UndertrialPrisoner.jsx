@@ -79,13 +79,19 @@ export default function UndertrialPrisoner() {
           <h3>{result.message}</h3>
           <ul>{result.notes.map((n,i)=><li key={i}>{n}</li>)}</ul>
           <div className="gemini-summary">
-            <b>Gemini Summary:</b>
-            <p>{result.summary}</p>
-            <p>
-              <b>Bail Eligibility:</b>{' '}
-              {result.eligible ? <span style={{ color: 'green' }}>Eligible for bail</span> : <span style={{ color: 'red' }}>Not eligible for bail</span>}
-            </p>
-          </div>
+  <b>Gemini Summary:</b>
+  {result.summary
+    .split(/\n\s*\n/)
+    .map((para, idx) => (
+      <p key={idx}>{para.trim()}</p>
+    ))}
+  <p>
+    <b>Bail Eligibility:</b>{' '}
+    {result.eligible
+      ? <span className="eligible">Eligible for bail</span>
+      : <span className="not-eligible">Not eligible for bail</span>}
+  </p>
+</div>
         </div>
       )}
     </motion.div>

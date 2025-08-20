@@ -116,3 +116,41 @@
   color: #991b1b;      
   border: 1px solid #fca5a5; 
 }
+
+/* FormPages.css */
+
+.gemini-summary {
+  background: #f7fafd;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(60, 120, 180, 0.06);
+}
+
+.gemini-summary b {
+  font-size: 1.08em;
+  color: #2563eb;
+}
+
+.gemini-summary p {
+  margin: 0 0 8px 0;
+  line-height: 1.6;
+}
+
+.gemini-summary .eligible {
+  color: #15803d;
+  font-weight: bold;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.gemini-summary .not-eligible {
+  color: #b91c1c;
+  font-weight: bold;
+  background: #fee2e2;
+  padding: 2px 8px;
+  border-radius: 4px;
+}

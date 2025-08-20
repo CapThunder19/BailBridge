@@ -127,6 +127,22 @@ router.post('/bail/:id/gemini-suggest', async (req, res) => {
     }
 });
 
+router.post('/add-court', async (req, res) => {
+    const { prisonerId, court } = req.body;
+    try {
+        const prisoner = await Prisoner.findById(prisonerId);
+        if (!prisoner) {
+            return res.status(404).json({ message: "Prisoner not found" });
+        }
+        prisoner.court = court;
+        await prisoner.save();
+        res.json({ message: "Court updated successfully", prisoner });
+    } catch (error) {
+        console.error("Error updating court:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 
 
 module.exports = router;

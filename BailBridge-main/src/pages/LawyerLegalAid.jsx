@@ -3,6 +3,8 @@ import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import './LawyerCaseLookup.css';
 import { generateStyledPdf } from '../components/Doc';
+import { generateBail } from '../components/Doc2';
+
 
 export default function LawyerCaseLookup() {
   const [name, setName] = useState('');
@@ -11,6 +13,8 @@ export default function LawyerCaseLookup() {
   const [caseDetails, setCaseDetails] = useState(null);
   const [error, setError] = useState('');
   const [bailStatus, setBailStatus] = useState('');
+  const [courtName, setCourtName] = useState('');
+  const [courtStatus, setCourtStatus] = useState('');
 
   async function fetchCaseDetails(e) {
     e.preventDefault();
@@ -33,13 +37,14 @@ export default function LawyerCaseLookup() {
      
       let pdfBase64 = null;
       if (sendPdf && caseDetails) {
-        const doc = new jsPDF();
-        doc.text('Bail Application', 10, 10);
-        doc.text(`Lawyer Name: ${lawyerName}`, 10, 20);
-        doc.text(`Prisoner Name: ${caseDetails.name}`, 10, 30);
-        doc.text(`Case Number: ${caseDetails.caseNumber}`, 10, 40);
-        doc.text(`Offense: ${caseDetails.sections || ''}`, 10, 50);
-        doc.text(`Status: ${caseDetails.status || ''}`, 10, 60);
+        const eligible =
+        caseDetails.eligible === true ||
+        caseDetails.eligible === "true" ||
+        caseDetails.eligible === 1;
+
+const doc = await generateBail(caseDetails, lawyerName, eligible, true);
+        doc.save("bail_application.pdf");
+
         pdfBase64 = doc.output('datauristring');
       }
 
@@ -63,6 +68,21 @@ function downloadPdf() {
   const doc = generateStyledPdf(caseDetails, lawyerName, eligible);
   doc.save("bail_application.pdf");
 }
+
+  async function handleAddCourt() {
+    setCourtStatus('');
+    try {
+      const res = await axios.post('http://localhost:5000/api/lawyer/add-court', {
+        prisonerId: caseDetails._id,
+        court: courtName
+      });
+      setCourtStatus('✅ Court updated!');
+      
+      setCaseDetails({ ...caseDetails, court: courtName });
+    } catch (err) {
+      setCourtStatus(err.response?.data?.message || '❌ Failed to update court');
+    }
+  }
 
   return (
     <div className="lawyer-case-container">
@@ -113,6 +133,21 @@ function downloadPdf() {
             <span className="label">Status:</span>
             <span className="value">{caseDetails.status}</span>
           </div>
+          {caseDetails.courtStage !== "investigation" && (
+           <div style={{ marginBottom: 12 }}>
+              <input
+                type="text"
+                placeholder="Enter Court Name"
+                value={courtName}
+                onChange={e => setCourtName(e.target.value)}
+                style={{ marginRight: 8 }}
+              />
+              <button className="bail-btn" onClick={handleAddCourt}>
+                Add Court
+              </button>
+              {courtStatus && <span style={{ marginLeft: 8 }}>{courtStatus}</span>}
+            </div>
+          )}
           <button onClick={downloadPdf} className="bail-btn">
             Download Bail Application PDF
           </button>
