@@ -17,7 +17,7 @@ export default function UndertrialPrisoner() {
     e.preventDefault();
     try {
       const payload = { ...form, timeServedDays: Number(form.timeServedDays), age: Number(form.age) };
-      const response = await axios.post('http://localhost:5000/api/prisoners', payload);
+      const response = await axios.post('https://bailbridge-8.onrender.com/api/prisoners', payload);
      
       const summaryText = response.data.summary?.candidates?.[0]?.content?.parts?.[0]?.text || 'No summary';
       const eligible = summaryText.toLowerCase().includes('eligible');

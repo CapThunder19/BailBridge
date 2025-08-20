@@ -12,7 +12,7 @@ export default function JudgeBailReview() {
 
   useEffect(() => {
     async function fetchApplications() {
-      const res = await axios.get('http://localhost:5000/api/lawyer/bail-applications');
+      const res = await axios.get('https://bailbridge-8.onrender.com/api/lawyer/bail-applications');
       setApplications(res.data);
     }
     fetchApplications();
@@ -20,7 +20,7 @@ export default function JudgeBailReview() {
 
   async function handleResponse(id) {
     try {
-      await axios.post(`http://localhost:5000/api/lawyer/bail/${id}/response`, {
+      await axios.post(`https://bailbridge-8.onrender.com/api/lawyer/bail/${id}/response`, {
         judgeResponse: response[id] || '',
         decision: decision[id]
       });
@@ -33,7 +33,7 @@ export default function JudgeBailReview() {
   async function getGeminiSuggestion(id) {
     setGeminiSuggestion(prev => ({ ...prev, [id]: "Loading suggestion..." }));
     try {
-      const res = await axios.post(`http://localhost:5000/api/lawyer/bail/${id}/gemini-suggest`);
+      const res = await axios.post(`https://bailbridge-8.onrender.com/api/lawyer/bail/${id}/gemini-suggest`);
       setGeminiSuggestion(prev => ({ ...prev, [id]: res.data.suggestion }));
       if (res.data.pdfText) {
         setPdfText(prev => ({ ...prev, [id]: res.data.pdfText }));

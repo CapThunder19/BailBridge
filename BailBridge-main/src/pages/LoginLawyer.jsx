@@ -12,7 +12,7 @@ export default function LoginLawyer() {
   async function submit(e) {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password, role: 'lawyer' });
+      const res = await axios.post('https://bailbridge-8.onrender.com/api/auth/login', { email, password, role: 'lawyer' });
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('role', 'lawyer');

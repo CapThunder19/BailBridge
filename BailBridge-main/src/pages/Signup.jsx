@@ -12,7 +12,7 @@ export default function Signup() {
   async function submit(e) {
     e.preventDefault();
     try {
-  const res = await axios.post('https://bailbridge-7.onrender.com/api/auth/signup', { email, password });
+  const res = await axios.post('https://bailbridge-8.onrender.com/api/auth/signup', { email, password });
       alert('Signup successful! Please login.');
       nav('/login');
     } catch (err) {

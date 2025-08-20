@@ -22,7 +22,7 @@ export default function LawyerCaseLookup() {
     setCaseDetails(null);
     setBailStatus('');
     try {
-      const res = await axios.get('http://localhost:5000/api/lawyer', {
+      const res = await axios.get('https://bailbridge-8.onrender.com/api/lawyer', {
         params: { id: caseNumber, name }
       });
       setCaseDetails(res.data);
@@ -48,7 +48,7 @@ const doc = await generateBail(caseDetails, lawyerName, eligible, true);
         pdfBase64 = doc.output('datauristring');
       }
 
-      const res = await axios.post('http://localhost:5000/api/lawyer/bail', {
+      const res = await axios.post('https://bailbridge-8.onrender.com/api/lawyer/bail', {
         prisonerId: caseDetails._id,
         lawyerName: lawyerName,
         pdf: pdfBase64
@@ -72,7 +72,7 @@ function downloadPdf() {
   async function handleAddCourt() {
     setCourtStatus('');
     try {
-      const res = await axios.post('http://localhost:5000/api/lawyer/add-court', {
+      const res = await axios.post('https://bailbridge-8.onrender.com/api/lawyer/add-court', {
         prisonerId: caseDetails._id,
         court: courtName
       });
