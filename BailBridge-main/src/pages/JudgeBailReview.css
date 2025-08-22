@@ -1,135 +1,160 @@
-
+/* ===== Page Container ===== */
 .judge-page {
-  max-width: 900px;
+  max-width: 5000px;
   margin: 40px auto;
-  padding: 25px;
-  background: #f4f7fb;
-  border-radius: 14px;
+  padding: 30px;
+  background: linear-gradient(145deg, #f6f8fb, #eef2f6);
+  border-radius: 16px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
 }
 
+/* ===== Headings ===== */
 .judge-page h2 {
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 26px;
+  margin-bottom: 30px;
+  font-size: 28px;
   font-weight: 700;
-  color: #2c3e50;
+  color: #1f2937;
+  letter-spacing: 0.5px;
 }
 
+.judge-page h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #374151;
+  font-weight: 600;
+  border-left: 4px solid #2563eb;
+  padding-left: 10px;
+}
 
+/* ===== Application Cards ===== */
 .application-card {
   background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 22px;
+  border-radius: 14px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .application-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
 
 .application-card p {
   margin: 6px 0;
   font-size: 15px;
-  color: #34495e;
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 /* ===== Buttons ===== */
 .application-card button,
 .button-secondary {
   display: inline-block;
-  padding: 10px 16px;
-  margin: 8px 6px 10px 0;
+  padding: 10px 18px;
+  margin: 10px 8px 10px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s;
+  transition: all 0.25s ease;
 }
 
 .application-card button {
-  background: #3498db;
-  color: white;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
 .application-card button:hover {
-  background: #2980b9;
-  transform: scale(1.03);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: scale(1.04);
 }
 
 .button-secondary {
-  background: #f0f3f6;
-  color: #2c3e50;
+  background: #f3f4f6;
+  color: #1f2937;
   text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .button-secondary:hover {
-  background: #dce3ec;
-  transform: scale(1.02);
+  background: #e5e7eb;
+  transform: scale(1.03);
 }
 
-
+/* ===== Inputs ===== */
 .application-card textarea,
 .application-card select {
   width: 100%;
-  padding: 10px;
-  margin-top: 12px;
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
+  padding: 12px;
+  margin-top: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
   font-size: 14px;
   outline: none;
-  transition: border 0.3s;
+  transition: border 0.3s, box-shadow 0.3s;
 }
 
 .application-card textarea:focus,
 .application-card select:focus {
-  border-color: #3498db;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  border-color: #3b82f6;
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
 }
 
 .application-card textarea {
-  min-height: 80px;
+  min-height: 90px;
   resize: vertical;
 }
 
-
+/* ===== PDF Text & Suggestions ===== */
 .pdf-text,
 .gemini-suggestion {
-  margin-top: 12px;
-  padding: 12px;
+  margin-top: 14px;
+  padding: 14px;
   background: #f9fafb;
-  border-left: 4px solid #3498db;
-  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  border-radius: 10px;
   font-size: 14px;
-  color: #2c3e50;
+  color: #374151;
 }
 
 .pdf-text pre {
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-family: monospace;
+  font-family: "Fira Code", monospace;
   font-size: 13px;
-  background: #f1f4f8;
-  padding: 10px;
-  border-radius: 6px;
+  background: #f3f4f6;
+  padding: 12px;
+  border-radius: 8px;
   overflow-x: auto;
 }
 
+/* ===== Status Message ===== */
 .status-msg {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 18px;
   font-size: 15px;
   font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: inline-block;
 }
 
 .status-msg.success {
-  color: #27ae60;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
 }
 
 .status-msg.error {
-  color: #e74c3c;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
 }
+
+
